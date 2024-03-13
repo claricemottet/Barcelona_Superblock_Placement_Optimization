@@ -218,7 +218,7 @@ class Network():
         self.link_file = link_file
         self.trip_file = trip_file
         self.node_file = node_file
-        self.graph = graph_
+        self.graph = graph_.copy()
         self.SO = SO
 
         #CM code
@@ -229,22 +229,22 @@ class Network():
 
         # self.build_datastructure()
 
-    # def build_datastructure(self):
-    #     """
-    #     Method for opening .tntp format network information files and preparing variables for the analysis
-    #     """
-    #     # links, nodes = self.open_link_file()
-    #     # self.open_trip_file()
+    def build_datastructure(self):
+        """
+        Method for opening .tntp format network information files and preparing variables for the analysis
+        """
+        # links, nodes = self.open_link_file()
+        # self.open_trip_file()
 
-    #     graph = nx.DiGraph()
+        graph = nx.DiGraph()
 
-    #     for l in self.links_in:
-    #         graph.add_edge(l.from_node, l.to_node, object=l, time=l.get_time())
+        for l in self.links_in:
+            graph.add_edge(l.from_node, l.to_node, object=l, time=l.get_time())
 
-    #     # if self.node_file != None:
-    #     #     self.open_node_file(graph)
-    #     #     Visualization.reLocateLinks(graph)
-    #     self.graph = graph
+        # if self.node_file != None:
+        #     self.open_node_file(graph)
+        #     Visualization.reLocateLinks(graph)
+        self.graph = graph
 
 
     # def open_link_file(self):
