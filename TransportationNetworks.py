@@ -71,7 +71,7 @@ class Link(object):
         self.link_id = None
         self.length = 0.0
         self.capacity = 0.0
-        self.alpha = 0.5
+        self.alpha = 0.15
         self.beta = 4.
         self.from_node = 0
         self.to_node = 0
