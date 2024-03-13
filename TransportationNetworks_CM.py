@@ -214,11 +214,11 @@ class Network():
     link_fields = {"from": 1, "to": 2, "capacity": 3, "length": 4, "t0": 5, \
                    "B": 6, "beta": 7, "V": 8}
 
-    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, links, node_file=None, SO=False):
+    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, links, graph, node_file=None, SO=False):
         self.link_file = link_file
         self.trip_file = trip_file
         self.node_file = node_file
-        self.graph = None
+        self.graph = graph
         self.SO = SO
 
         #CM code
@@ -227,151 +227,151 @@ class Network():
         self.od_dic = od_dic
         self.links_in = links
 
-        self.build_datastructure()
+        # self.build_datastructure()
 
-    def build_datastructure(self):
-        """
-        Method for opening .tntp format network information files and preparing variables for the analysis
-        """
-        # links, nodes = self.open_link_file()
-        # self.open_trip_file()
+    # def build_datastructure(self):
+    #     """
+    #     Method for opening .tntp format network information files and preparing variables for the analysis
+    #     """
+    #     # links, nodes = self.open_link_file()
+    #     # self.open_trip_file()
 
-        graph = nx.DiGraph()
+    #     graph = nx.DiGraph()
 
-        for l in self.links_in:
-            graph.add_edge(l.from_node, l.to_node, object=l, time=l.get_time())
+    #     for l in self.links_in:
+    #         graph.add_edge(l.from_node, l.to_node, object=l, time=l.get_time())
 
-        # if self.node_file != None:
-        #     self.open_node_file(graph)
-        #     Visualization.reLocateLinks(graph)
-        self.graph = graph
+    #     # if self.node_file != None:
+    #     #     self.open_node_file(graph)
+    #     #     Visualization.reLocateLinks(graph)
+    #     self.graph = graph
 
 
-    def open_link_file(self):
-        """
-        Method for opening network file, containing various link information
+    # def open_link_file(self):
+    #     """
+    #     Method for opening network file, containing various link information
         
-        Returns
-        -------
-        list
-            list of Link objects having current link condition
-        list
-            list of Node objects
+    #     Returns
+    #     -------
+    #     list
+    #         list of Link objects having current link condition
+    #     list
+    #         list of Node objects
         
-        """
-        f = open(self.link_file)
-        lines = f.readlines()
-        f.close()
+    #     """
+    #     f = open(self.link_file)
+    #     lines = f.readlines()
+    #     f.close()
 
-        links_info = []
+    #     links_info = []
 
-        header_found = False
-        for line in lines:
-            if not header_found and line.startswith("~"):
-                header_found = True
-            elif header_found:
-                links_info.append(line)
+    #     header_found = False
+    #     for line in lines:
+    #         if not header_found and line.startswith("~"):
+    #             header_found = True
+    #         elif header_found:
+    #             links_info.append(line)
 
-        nodes = {}
-        links = []
+    #     nodes = {}
+    #     links = []
 
-        for line in links_info:
-            data = line.split("\t")
+    #     for line in links_info:
+    #         data = line.split("\t")
 
-            try:
-                origin_node = str(int(data[self.link_fields["from"]]))
-            except IndexError:
-                continue
-            to_node = str(int(data[self.link_fields["to"]]))
-            capacity = float(data[self.link_fields["capacity"]])
-            length = float(data[self.link_fields["length"]])
-            alpha = float(data[self.link_fields["B"]])
-            beta = float(data[self.link_fields["beta"]])
+    #         try:
+    #             origin_node = str(int(data[self.link_fields["from"]]))
+    #         except IndexError:
+    #             continue
+    #         to_node = str(int(data[self.link_fields["to"]]))
+    #         capacity = float(data[self.link_fields["capacity"]])
+    #         length = float(data[self.link_fields["length"]])
+    #         alpha = float(data[self.link_fields["B"]])
+    #         beta = float(data[self.link_fields["beta"]])
 
-            if origin_node not in nodes:
-                n = Node(node_id=origin_node)
-                nodes[origin_node] = n
+    #         if origin_node not in nodes:
+    #             n = Node(node_id=origin_node)
+    #             nodes[origin_node] = n
 
-            if to_node not in nodes:
-                n = Node(node_id=to_node)
-                nodes[to_node] = n
+    #         if to_node not in nodes:
+    #             n = Node(node_id=to_node)
+    #             nodes[to_node] = n
 
-            l = Link(link_id=len(links), length=length, capacity=capacity, alpha=alpha, beta=beta,
-                     from_node=origin_node, to_node=to_node, flow=float(0.0), SO=self.SO)
+    #         l = Link(link_id=len(links), length=length, capacity=capacity, alpha=alpha, beta=beta,
+    #                  from_node=origin_node, to_node=to_node, flow=float(0.0), SO=self.SO)
 
-            links.append(l)
-        return links, nodes.values()
+    #         links.append(l)
+    #     return links, nodes.values()
 
-    def open_node_file(self, graph):
-        """
-        Method for opening node file, containing position information of nodes \n
-        This method adds 'pos' key-value pair in graph variable
-        """
-        f = open(self.node_file)
-        n = 0
-        for i in f:
-            row = i.split("	")
-            if n == 0:
-                n += 1
+    # def open_node_file(self, graph):
+    #     """
+    #     Method for opening node file, containing position information of nodes \n
+    #     This method adds 'pos' key-value pair in graph variable
+    #     """
+    #     f = open(self.node_file)
+    #     n = 0
+    #     for i in f:
+    #         row = i.split("	")
+    #         if n == 0:
+    #             n += 1
 
-            else:
-                try:
-                    if self.node_file == "berlin-center_node.tntp":
-                        # ind, x, y = str(int(row[0])), float(row[1]), float(row[3])
-                        ind = str(int(row[0]))
-                    else:
-                        # ind, x, y = str(int(row[0])), float(row[1]), float(row[2])
-                        ind = str(int(row[0]))
-                    # graph.node[ind]["pos"] = (x, y)
-                    graph.node[ind]["pos"] = (1, 2)
-                except:
-                    print(row)
-        f.close()
+    #         else:
+    #             try:
+    #                 if self.node_file == "berlin-center_node.tntp":
+    #                     # ind, x, y = str(int(row[0])), float(row[1]), float(row[3])
+    #                     ind = str(int(row[0]))
+    #                 else:
+    #                     # ind, x, y = str(int(row[0])), float(row[1]), float(row[2])
+    #                     ind = str(int(row[0]))
+    #                 # graph.node[ind]["pos"] = (x, y)
+    #                 graph.node[ind]["pos"] = (1, 2)
+    #             except:
+    #                 print(row)
+    #     f.close()
 
-    def open_trip_file(self, demand_factor=1.0):
-        """
-        Method for opening trip tables containing OD flows of each OD pair
+    # def open_trip_file(self, demand_factor=1.0):
+    #     """
+    #     Method for opening trip tables containing OD flows of each OD pair
         
-        Parameter
-        ---------
-        demand_factor   float
-                        demand factor
-        """
-        f = open(self.trip_file)
-        lines = f.readlines()
-        f.close()
+    #     Parameter
+    #     ---------
+    #     demand_factor   float
+    #                     demand factor
+    #     """
+    #     f = open(self.trip_file)
+    #     lines = f.readlines()
+    #     f.close()
 
-        self.od_vols = {}
-        current_origin = None
+    #     self.od_vols = {}
+    #     current_origin = None
 
-        for line in lines:
-            if current_origin == None and line.startswith("Origin"):
-                origin = str(int(line.split("Origin")[1]))
-                current_origin = origin
+    #     for line in lines:
+    #         if current_origin == None and line.startswith("Origin"):
+    #             origin = str(int(line.split("Origin")[1]))
+    #             current_origin = origin
 
-            elif current_origin != None and len(line) < 3:
-                # print "blank",line,
-                current_origin = None
+    #         elif current_origin != None and len(line) < 3:
+    #             # print "blank",line,
+    #             current_origin = None
 
-            elif current_origin != None:
-                to_process = line[0:-2]
-                for el in to_process.split(";"):
-                    try:
-                        dest = str(int(el.split(":")[0]))
-                        demand = float(el.split(":")[1]) * demand_factor
-                        self.od_vols[current_origin, dest] = demand
-                    except:
-                        continue
-        origins = [str(i) for i, j in self.od_vols]
-        self.origins = list(dict.fromkeys(origins).keys())
+    #         elif current_origin != None:
+    #             to_process = line[0:-2]
+    #             for el in to_process.split(";"):
+    #                 try:
+    #                     dest = str(int(el.split(":")[0]))
+    #                     demand = float(el.split(":")[1]) * demand_factor
+    #                     self.od_vols[current_origin, dest] = demand
+    #                 except:
+    #                     continue
+    #     origins = [str(i) for i, j in self.od_vols]
+    #     self.origins = list(dict.fromkeys(origins).keys())
 
-        od_dic = {}
-        for (origin, destination) in self.od_vols:
-            if origin not in od_dic:
-                od_dic[origin] = {}
+    #     od_dic = {}
+    #     for (origin, destination) in self.od_vols:
+    #         if origin not in od_dic:
+    #             od_dic[origin] = {}
 
-            od_dic[origin][destination] = self.od_vols[origin, destination]
-        self.od_dic = od_dic
+    #         od_dic[origin][destination] = self.od_vols[origin, destination]
+    #     self.od_dic = od_dic
     def get_od_dic(self):
         return self.od_dic
     def all_or_nothing_assignment(self):
