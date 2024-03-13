@@ -385,7 +385,6 @@ class Network():
 
         shortestpath_graph = {}
         for i in self.origins:
-            print("i",i)
             shortestpath_graph[i] = nx.single_source_dijkstra(self.graph, i, weight="weight")
         for (i, j) in self.od_vols:
             odvol = self.od_vols[(i, j)]
