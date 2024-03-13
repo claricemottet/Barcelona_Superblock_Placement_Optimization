@@ -218,7 +218,7 @@ class Network():
         self.link_file = link_file
         self.trip_file = trip_file
         self.node_file = node_file
-        self.graph = graph_.copy()
+        self.graph = None
         self.SO = SO
 
         #CM code
@@ -227,7 +227,8 @@ class Network():
         self.od_dic = od_dic
         self.links_in = links
 
-        # self.build_datastructure()
+        self.build_datastructure()
+
 
     def build_datastructure(self):
         """
