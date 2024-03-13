@@ -87,10 +87,10 @@ class Link(object):
 
     #CM added
     def get_from_node(self):
-        return self.from_node
+        return int(self.from_node)
     #CM added
     def get_to_node(self):
-        return self.to_node
+        return int(self.to_node)
 
     def get_time(self):
         """
