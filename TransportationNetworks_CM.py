@@ -85,6 +85,13 @@ class Link(object):
         for k, v in kwargs.items():
             self.__dict__[k] = v
 
+    #CM added
+    def get_from_node(self):
+        return self.from_node
+    #CM added
+    def get_to_node(self):
+        return self.to_node
+
     def get_time(self):
         """
         Method for getting link travel time based on the BPR function \n
