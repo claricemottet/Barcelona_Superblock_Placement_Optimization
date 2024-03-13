@@ -207,7 +207,7 @@ class Network():
     link_fields = {"from": 1, "to": 2, "capacity": 3, "length": 4, "t0": 5, \
                    "B": 6, "beta": 7, "V": 8}
 
-    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, node_file=None, SO=False):
+    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, links, node_file=None, SO=False):
         self.link_file = link_file
         self.trip_file = trip_file
         self.node_file = node_file
@@ -218,6 +218,7 @@ class Network():
         self.od_vols = od_vols
         self.origins = origins
         self.od_dic = od_dic
+        self.links_in = links
 
         self.build_datastructure()
 
@@ -225,17 +226,17 @@ class Network():
         """
         Method for opening .tntp format network information files and preparing variables for the analysis
         """
-        links, nodes = self.open_link_file()
+        # links, nodes = self.open_link_file()
         # self.open_trip_file()
 
         graph = nx.DiGraph()
 
-        for l in links:
+        for l in self.links_in:
             graph.add_edge(l.from_node, l.to_node, object=l, time=l.get_time())
 
-        if self.node_file != None:
-            self.open_node_file(graph)
-            Visualization.reLocateLinks(graph)
+        # if self.node_file != None:
+        #     self.open_node_file(graph)
+        #     Visualization.reLocateLinks(graph)
         self.graph = graph
 
 
