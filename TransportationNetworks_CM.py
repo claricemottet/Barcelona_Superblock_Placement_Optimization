@@ -214,11 +214,11 @@ class Network():
     link_fields = {"from": 1, "to": 2, "capacity": 3, "length": 4, "t0": 5, \
                    "B": 6, "beta": 7, "V": 8}
 
-    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, links, graph, node_file=None, SO=False):
+    def __init__(self, link_file, trip_file, od_vols, origins, od_dic, links, graph_, node_file=None, SO=False):
         self.link_file = link_file
         self.trip_file = trip_file
         self.node_file = node_file
-        self.graph = graph
+        self.graph = graph_
         self.SO = SO
 
         #CM code
