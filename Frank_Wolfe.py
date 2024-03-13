@@ -3,7 +3,7 @@ import scipy.integrate as integrate
 from scipy.optimize import minimize_scalar
 import matplotlib.pyplot as plt
 
-from PyTrans.UrbanNetworkAnalysis import TransportationNetworks as tn
+import TransportationNetworks as tn
 
 class Run:
     """
