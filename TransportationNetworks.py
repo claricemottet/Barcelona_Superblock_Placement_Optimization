@@ -304,10 +304,13 @@ class Network():
             else:
                 try:
                     if self.node_file == "berlin-center_node.tntp":
-                        ind, x, y = str(int(row[0])), float(row[1]), float(row[3])
+                        # ind, x, y = str(int(row[0])), float(row[1]), float(row[3])
+                        ind = str(int(row[0]))
                     else:
-                        ind, x, y = str(int(row[0])), float(row[1]), float(row[2])
-                    graph.node[ind]["pos"] = (x, y)
+                        # ind, x, y = str(int(row[0])), float(row[1]), float(row[2])
+                        ind = str(int(row[0]))
+                    # graph.node[ind]["pos"] = (x, y)
+                    graph.node[ind]["pos"] = (1, 2)
                 except:
                     print(row)
         f.close()
